@@ -12,17 +12,29 @@ namespace Semjasa\Heise\AbstractControllers;
 use Semjasa\Heise\Http\Request;
 use Semjasa\Heise\Library\TwigRendering;
 
+/**
+ * Class AbstractController
+ * @package Semjasa\Heise\AbstractControllers
+ */
 class AbstractController
 {
+    /**
+     * @var Request
+     */
     protected $request;
 
-    protected $sesionService;
-
+    /**
+     * AbstractController constructor.
+     * @param Request $request
+     */
     public function __construct(Request $request)
     {
         $this->request = $request;
     }
 
+    /**
+     *
+     */
     public function indexAction()
     {
         new TwigRendering(

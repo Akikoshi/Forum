@@ -9,6 +9,7 @@
 namespace Semjasa\Heise\ContollerFactory;
 
 
+use Semjasa\Heise\Exception\NotFoundException;
 use Semjasa\Heise\Http\Request;
 
 /**
@@ -30,7 +31,7 @@ class ControllerFactory
     /**
      * @var
      */
-    private $controllerInstance;
+    private $controllerInterface;
 
     /**
      * @var
@@ -59,15 +60,70 @@ class ControllerFactory
         $this->loadAction();
     }
 
-    public function generateClassPath()
+    /**
+     * @return mixed
+     */
+    public function getControllerInstence()
     {
-        $this->classPath = __DIR__ . '/../Controllers/' . $this->request->getControllerName();
+        return $this->controllerInterface;
     }
 
-    private function checkIfControllerExists()
+    /**
+     *
+     */
+    public function generateClassPath()
     {
-        if (! is_dir($this->classPath)){
-            throw new NotFoundExeption("Action " . $this->request->getControllerName());
+        $this->classPath =
+            __DIR__ . '/../Controllers/'
+            . $this->request->getControllerName();
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function checkIfControllerExists()
+    {
+        if(! is_dir($this->classPath))
+        {
+            throw new NotFoundException("Action "
+                . $this->request->getControllerName());
         }
+    }
+
+    /**
+     *
+     */
+    public function generateClassNameWithNamespace()
+    {
+        $this->classWithNamespace =
+            '\\' . $this->namespace . '\\Controllers\\'
+            . $this->request->getControllerName() . '\\Controller';
+    }
+
+    /**
+     *
+     */
+    public function loadController()
+    {
+        $this->controllerInterface = new $this->classWithNamespace(
+            $this->request);
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    private function loadAction()
+    {
+        $actionName = $this->request->getActionName();
+        $actionName .= 'Action';
+        $controllerClassName = get_class($this->controllerInterface);
+        $methodList = get_class_methods($controllerClassName);
+
+        if(in_array($actionName, $methodList))
+        {
+            $this->controllerInterface->$actionName();
+            return;
+        }
+        throw new NotFoundException("Action " . $actionName);
     }
 }

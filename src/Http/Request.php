@@ -98,7 +98,7 @@ class Request
         $controller = 'home';
         $action = 'index';
 
-        $pattern = '/^\/([^\/|?]+)(\/([^\/|?]+)){0,1}(\/([^\/|?]+)){0,1}(\/([^\/|?]+)){0,1}/i';
+        $pattern = '/^\/([^\/|?]+)(\/([^\/|?]+))?(\/([^\/|?]+))?(\/([^\/|?]+))?/i';
         preg_match($pattern, $this->requestUri, $matches);
         
         if (! empty($matches[1])) $controller = $matches[1];
@@ -106,6 +106,9 @@ class Request
         
         $this->controllerName = $this->convertUpperCaseFirst($controller);
         $this->actionName = strtolower($action);
+
+        if(! empty($matches[5])) $this->firstVar = $matches[5];
+        if(! empty($matches[7])) $this->secondVar = $matches[7];
     }
 
     /**

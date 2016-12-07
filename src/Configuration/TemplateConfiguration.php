@@ -9,6 +9,10 @@
 namespace Semjasa\Heise\Configuration;
 
 
+/**
+ * Class TemplateConfiguration
+ * @package Semjasa\Heise\Configuration
+ */
 final class TemplateConfiguration
 {
     /**
